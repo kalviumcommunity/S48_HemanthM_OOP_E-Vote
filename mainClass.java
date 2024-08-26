@@ -3,9 +3,9 @@ class Voter {
     String name;
     String voterId;
 
-    Voter(String voterName, String voterIdNumber) {
-        name = voterName;
-        voterId = voterIdNumber;
+    Voter(String name, String voterId) {
+        this.name = name;
+        this.voterId = voterId;
     }
 
     void castVote(String candidate, String party) {
@@ -15,18 +15,18 @@ class Voter {
 
 // Candidate class
 class Candidate {
-    String candidateName;
-    String partyName;
+    String name;
+    String party;
     int voteCount;
 
-    Candidate(String candidateNameInput, String partyNameInput) {
-        candidateName = candidateNameInput;
-        partyName = partyNameInput;
-        voteCount = 0;
+    Candidate(String name, String party) {
+        this.name = name;
+        this.party = party;
+        this.voteCount = 0;
     }
 
     void displayInfo() {
-        System.out.println("Candidate: " + candidateName + ", Party: " + partyName + ", Votes Received: " + voteCount);
+        System.out.println("Candidate: " + name + ", Party: " + party + ", Votes Received: " + voteCount);
     }
 
     void receiveVote() {
@@ -42,10 +42,10 @@ public class mainClass {
         Candidate candidate1 = new Candidate("Bhagat", "Red Party");
         Candidate candidate2 = new Candidate("Azad", "Green Party");
 
-        voter1.castVote(candidate1.candidateName, candidate1.partyName);
+        voter1.castVote(candidate1.name, candidate1.party);
         candidate1.receiveVote();
 
-        voter2.castVote(candidate2.candidateName, candidate2.partyName);
+        voter2.castVote(candidate2.name, candidate2.party);
         candidate2.receiveVote();
 
         candidate1.displayInfo();
