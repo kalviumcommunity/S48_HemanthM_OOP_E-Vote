@@ -40,12 +40,22 @@ public class mainClass {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        Voter[] voters = new Voter[5];
+        Voter[] voters = new Voter[15];
         voters[0] = new Voter("John", "V001");
         voters[1] = new Voter("Bob", "V002");
         voters[2] = new Voter("Alice", "V003");
         voters[3] = new Voter("Ravi", "V004");
         voters[4] = new Voter("Sita", "V005");
+        voters[5] = new Voter("Mohan", "V006");
+        voters[6] = new Voter("Radha", "V007");
+        voters[7] = new Voter("Suresh", "V008");
+        voters[8] = new Voter("Geeta", "V009");
+        voters[9] = new Voter("Vikram", "V010");
+        voters[10] = new Voter("Anjali", "V011");
+        voters[11] = new Voter("Karan", "V012");
+        voters[12] = new Voter("Deepa", "V013");
+        voters[13] = new Voter("Ramesh", "V014");
+        voters[14] = new Voter("Sunita", "V015");
 
         Candidate[] candidates = new Candidate[2];
         candidates[0] = new Candidate("Bhagat", "Red Party");
