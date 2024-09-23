@@ -2,12 +2,26 @@ import java.util.*;
 
 // Voter class
 class Voter {
-    String name;
-    String voterId;
+    private String name;
+    private String voterId;
+    private static int totalVoters = 0;
 
     Voter(String name, String voterId) {
         this.name = name;
         this.voterId = voterId;
+        totalVoters++;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getVoterId() {
+        return voterId;
+    }
+
+    public static int getTotalVoters() {
+        return totalVoters;
     }
 
     void castVote(String candidate, String party) {
@@ -17,9 +31,10 @@ class Voter {
 
 // Candidate class
 class Candidate {
-    String name;
-    String party;
-    int voteCount;
+    private String name;
+    private String party;
+    private int voteCount;
+    private static int totalVotesCast = 0;
 
     Candidate(String name, String party) {
         this.name = name;
@@ -27,12 +42,29 @@ class Candidate {
         this.voteCount = 0;
     }
 
-    void displayInfo() {
-        System.out.println("Candidate: " + name + ", Party: " + party + ", Votes Received: " + voteCount);
+    public String getName() {
+        return name;
+    }
+
+    public String getParty() {
+        return party;
+    }
+
+    public int getVoteCount() {
+        return voteCount;
+    }
+
+    public static int getTotalVotesCast() {
+        return totalVotesCast;
     }
 
     void receiveVote() {
         voteCount++;
+        totalVotesCast++;
+    }
+
+    void displayInfo() {
+        System.out.println("Candidate: " + name + ", Party: " + party + ", Votes Received: " + voteCount);
     }
 }
 
@@ -68,19 +100,19 @@ public class mainClass {
 
         boolean voterFound = false;
         for (Voter voter : voters) {
-            if (voter.name.equals(inputName) && voter.voterId.equals(inputVoterId)) {
+            if (voter.getName().equals(inputName) && voter.getVoterId().equals(inputVoterId)) {
                 voterFound = true;
                 System.out.println("Voter verified.");
 
                 System.out.println("Enter candidate's unique number to vote:");
                 for (int i = 0; i < candidates.length; i++) {
-                    System.out.println((i + 1) + ": " + candidates[i].name + " (" + candidates[i].party + ")");
+                    System.out.println((i + 1) + ": " + candidates[i].getName() + " (" + candidates[i].getParty() + ")");
                 }
 
                 int candidateChoice = scanner.nextInt();
 
                 if (candidateChoice >= 1 && candidateChoice <= candidates.length) {
-                    voter.castVote(candidates[candidateChoice - 1].name, candidates[candidateChoice - 1].party);
+                    voter.castVote(candidates[candidateChoice - 1].getName(), candidates[candidateChoice - 1].getParty());
                     candidates[candidateChoice - 1].receiveVote();
                 } else {
                     System.out.println("Invalid candidate choice.");
@@ -97,6 +129,9 @@ public class mainClass {
         for (Candidate candidate : candidates) {
             candidate.displayInfo();
         }
+
+        System.out.println("\nTotal Voters: " + Voter.getTotalVoters());
+        System.out.println("Total Votes Cast: " + Candidate.getTotalVotesCast());
 
         scanner.close();
     }
