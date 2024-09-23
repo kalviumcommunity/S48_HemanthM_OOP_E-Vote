@@ -1,4 +1,4 @@
-import java.util.*;
+import java.util.Scanner;
 
 // Voter class
 class Voter {
@@ -38,30 +38,18 @@ class Candidate {
 
 public class mainClass {
     public static void main(String[] args) {
-        // Sample voters
-        Voter[] voters = {
-            new Voter("John", "V001"),
-            new Voter("Bob", "V002"),
-            new Voter("Alice", "V003"),
-            new Voter("Ravi", "V004"),
-            new Voter("Sita", "V005"),
-            new Voter("Mohan", "V006"),
-            new Voter("Radha", "V007"),
-            new Voter("Suresh", "V008"),
-            new Voter("Geeta", "V009"),
-            new Voter("Vikram", "V010"),
-            new Voter("Anjali", "V011"),
-            new Voter("Karan", "V012"),
-            new Voter("Deepa", "V013"),
-            new Voter("Ramesh", "V014"),
-            new Voter("Sunita", "V015")
-        };
-
-        // Sample candidates
-        Candidate candidate1 = new Candidate("Bhagat", "Red Party");
-        Candidate candidate2 = new Candidate("Azad", "Green Party");
-
         Scanner scanner = new Scanner(System.in);
+
+        Voter[] voters = new Voter[5];
+        voters[0] = new Voter("John", "V001");
+        voters[1] = new Voter("Bob", "V002");
+        voters[2] = new Voter("Alice", "V003");
+        voters[3] = new Voter("Ravi", "V004");
+        voters[4] = new Voter("Sita", "V005");
+
+        Candidate[] candidates = new Candidate[2];
+        candidates[0] = new Candidate("Bhagat", "Red Party");
+        candidates[1] = new Candidate("Azad", "Green Party");
 
         System.out.println("Enter your name:");
         String inputName = scanner.nextLine();
@@ -74,15 +62,16 @@ public class mainClass {
                 voterFound = true;
                 System.out.println("Voter verified.");
 
-                System.out.println("Enter candidate's unique number (1 for Bhagat, 2 for Azad):");
+                System.out.println("Enter candidate's unique number to vote:");
+                for (int i = 0; i < candidates.length; i++) {
+                    System.out.println((i + 1) + ": " + candidates[i].name + " (" + candidates[i].party + ")");
+                }
+
                 int candidateChoice = scanner.nextInt();
 
-                if (candidateChoice == 1) {
-                    voter.castVote(candidate1.name, candidate1.party);
-                    candidate1.receiveVote();
-                } else if (candidateChoice == 2) {
-                    voter.castVote(candidate2.name, candidate2.party);
-                    candidate2.receiveVote();
+                if (candidateChoice >= 1 && candidateChoice <= candidates.length) {
+                    voter.castVote(candidates[candidateChoice - 1].name, candidates[candidateChoice - 1].party);
+                    candidates[candidateChoice - 1].receiveVote();
                 } else {
                     System.out.println("Invalid candidate choice.");
                 }
@@ -93,9 +82,11 @@ public class mainClass {
         if (!voterFound) {
             System.out.println("Voter not found or incorrect details provided.");
         }
-        
-        candidate1.displayInfo();
-        candidate2.displayInfo();
+
+        System.out.println("\nElection Results:");
+        for (Candidate candidate : candidates) {
+            candidate.displayInfo();
+        }
 
         scanner.close();
     }
