@@ -63,14 +63,19 @@ class Candidate {
         totalVotesCast++;
     }
 
-    void displayInfo() {
-        System.out.println("Candidate: " + name + ", Party: " + party + ", Votes Received: " + voteCount);
+    public static void displayTotalVotesCast() {
+        System.out.println("Total Votes Cast in Election: " + totalVotesCast);
+    }
+
+    void displayPartyVotes() {
+        System.out.println(party + " Party Votes: " + voteCount);
     }
 }
 
 public class mainClass {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
+        int votersVoted = 0;
 
         Voter[] voters = new Voter[15];
         voters[0] = new Voter("John", "V001");
@@ -93,46 +98,84 @@ public class mainClass {
         candidates[0] = new Candidate("Bhagat", "Red Party");
         candidates[1] = new Candidate("Azad", "Green Party");
 
-        System.out.println("Enter your name:");
-        String inputName = scanner.nextLine();
-        System.out.println("Enter your Voter ID:");
-        String inputVoterId = scanner.nextLine();
+        while (true) {
+            boolean voterFound = false;
 
-        boolean voterFound = false;
-        for (Voter voter : voters) {
-            if (voter.getName().equals(inputName) && voter.getVoterId().equals(inputVoterId)) {
-                voterFound = true;
-                System.out.println("Voter verified.");
+            while (!voterFound) {
+                System.out.println("Enter your name:");
+                String inputName = scanner.nextLine();
+                System.out.println("Enter your Voter ID:");
+                String inputVoterId = scanner.nextLine();
 
-                System.out.println("Enter candidate's unique number to vote:");
-                for (int i = 0; i < candidates.length; i++) {
-                    System.out.println((i + 1) + ": " + candidates[i].getName() + " (" + candidates[i].getParty() + ")");
+                for (Voter voter : voters) {
+                    if (voter.getName().equals(inputName) && voter.getVoterId().equals(inputVoterId)) {
+                        voterFound = true;
+                        System.out.println("Voter verified.");
+
+                        boolean validVote = false;
+                        while (!validVote) {
+                            System.out.println("Enter candidate's unique number to vote:");
+                            for (int i = 0; i < candidates.length; i++) {
+                                System.out.println((i + 1) + ": " + candidates[i].getName() + " (" + candidates[i].getParty() + ")");
+                            }
+
+                            int candidateChoice = scanner.nextInt();
+                            scanner.nextLine();
+
+                            if (candidateChoice >= 1 && candidateChoice <= candidates.length) {
+                                voter.castVote(candidates[candidateChoice - 1].getName(), candidates[candidateChoice - 1].getParty());
+                                candidates[candidateChoice - 1].receiveVote();
+                                votersVoted++;
+                                validVote = true;
+                            } else {
+                                System.out.println("Invalid candidate choice. Please try again.");
+                            }
+                        }
+
+                        boolean continueOptions = true;
+                        while (continueOptions) {
+                            System.out.println("\nWhat would you like to do next?");
+                            System.out.println("1. Exit");
+                            System.out.println("2. Next Vote");
+                            System.out.println("3. Show Total Voters in Array");
+                            System.out.println("4. Show Total Voters Who Voted");
+                            System.out.println("5. Show Total Votes Received by Each Party");
+
+                            int choice = scanner.nextInt();
+                            scanner.nextLine();
+
+                            switch (choice) {
+                                case 1:
+                                    System.out.println("Exiting program...");
+                                    scanner.close();
+                                    return;
+                                case 2:
+                                    continueOptions = false;
+                                    break;
+                                case 3:
+                                    System.out.println("Total Voters in Array: " + Voter.getTotalVoters());
+                                    break;
+                                case 4:
+                                    System.out.println("Total Voters Who Voted: " + votersVoted);
+                                    break;
+                                case 5:
+                                    for (Candidate candidate : candidates) {
+                                        candidate.displayPartyVotes();
+                                    }
+                                    break;
+                                default:
+                                    System.out.println("Invalid choice. Please try again.");
+                            }
+                        }
+
+                        break;
+                    }
                 }
 
-                int candidateChoice = scanner.nextInt();
-
-                if (candidateChoice >= 1 && candidateChoice <= candidates.length) {
-                    voter.castVote(candidates[candidateChoice - 1].getName(), candidates[candidateChoice - 1].getParty());
-                    candidates[candidateChoice - 1].receiveVote();
-                } else {
-                    System.out.println("Invalid candidate choice.");
+                if (!voterFound) {
+                    System.out.println("Voter not found or incorrect details provided. Please try again.");
                 }
-                break;
             }
         }
-
-        if (!voterFound) {
-            System.out.println("Voter not found or incorrect details provided.");
-        }
-
-        System.out.println("\nElection Results:");
-        for (Candidate candidate : candidates) {
-            candidate.displayInfo();
-        }
-
-        System.out.println("\nTotal Voters: " + Voter.getTotalVoters());
-        System.out.println("Total Votes Cast: " + Candidate.getTotalVotesCast());
-
-        scanner.close();
     }
 }
