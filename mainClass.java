@@ -2,6 +2,8 @@ import java.util.*;
 
 // Voter class
 class Voter {
+
+    // Private fields
     private String name;
     private String voterId;
     private static int totalVoters = 0;
@@ -12,19 +14,19 @@ class Voter {
         totalVoters++;
     }
 
-    public String getName() { // Accessor
+    public String getName() { // Public accessor
         return name;
     }
 
-    public void setName(String name) { // Mutator
+    public void setName(String name) { // Public mutator
         this.name = name;
     }
 
-    public String getVoterId() { // Accessor
+    public String getVoterId() { // Public accessor
         return voterId;
     }
 
-    public void setVoterId(String voterId) {  // Mutator
+    public void setVoterId(String voterId) {  // Public mutator
         this.voterId = voterId;
     }
 
@@ -39,6 +41,8 @@ class Voter {
 
 // Candidate class
 class Candidate {
+
+    // Private fields
     private String name;
     private String party;
     private int voteCount;
@@ -50,19 +54,19 @@ class Candidate {
         this.voteCount = 0;
     }
 
-    public String getName() { // Accessor
+    public String getName() { // Public accessor
         return name;
     }
 
-    public void setName(String name) { // Mutator
+    public void setName(String name) { // Public mutator
         this.name = name;
     }
 
-    public String getParty() { // Accessor
+    public String getParty() { // Public accessor
         return party;
     }
 
-    public void setParty(String party) { // Mutator
+    public void setParty(String party) { // Public mutator
         this.party = party;
     }
 
