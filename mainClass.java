@@ -130,7 +130,6 @@ public class mainClass {
 
         Candidate[] candidates = new Candidate[2];
         candidates[0] = new Candidate("Bhagat", "Red Party");
-        candidates[1] = new Candidate("Azad", "Green Party");
         candidates[1] = new Candidate();
 
         while (true) {
