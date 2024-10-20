@@ -12,12 +12,20 @@ class Voter {
         totalVoters++;
     }
 
-    public String getName() {
+    public String getName() { // Accessor
         return name;
     }
 
-    public String getVoterId() {
+    public void setName(String name) { // Mutator
+        this.name = name;
+    }
+
+    public String getVoterId() { // Accessor
         return voterId;
+    }
+
+    public void setVoterId(String voterId) {  // Mutator
+        this.voterId = voterId;
     }
 
     public static int getTotalVoters() {
@@ -42,12 +50,20 @@ class Candidate {
         this.voteCount = 0;
     }
 
-    public String getName() {
+    public String getName() { // Accessor
         return name;
     }
 
-    public String getParty() {
+    public void setName(String name) { // Mutator
+        this.name = name;
+    }
+
+    public String getParty() { // Accessor
         return party;
+    }
+
+    public void setParty(String party) { // Mutator
+        this.party = party;
     }
 
     public int getVoteCount() {
