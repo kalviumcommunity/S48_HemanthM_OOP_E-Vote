@@ -8,6 +8,13 @@ class Voter {
     private String voterId;
     private static int totalVoters = 0;
 
+    // Default constructor
+    public Voter() {
+        this.name = "Bob";
+        this.voterId = "V002";
+    }
+
+    // Parameterized constructor
     Voter(String name, String voterId) {
         this.name = name;
         this.voterId = voterId;
@@ -48,6 +55,13 @@ class Candidate {
     private int voteCount;
     private static int totalVotesCast = 0;
 
+    // Default constructor
+    public Candidate() {
+        this.name = "Azad";
+        this.party = "Green Party";
+    }
+
+    // Parameterized constructor
     Candidate(String name, String party) {
         this.name = name;
         this.party = party;
@@ -99,7 +113,7 @@ public class mainClass {
 
         Voter[] voters = new Voter[15];
         voters[0] = new Voter("John", "V001");
-        voters[1] = new Voter("Bob", "V002");
+        voters[1] = new Voter(); 
         voters[2] = new Voter("Alice", "V003");
         voters[3] = new Voter("Ravi", "V004");
         voters[4] = new Voter("Sita", "V005");
@@ -117,6 +131,7 @@ public class mainClass {
         Candidate[] candidates = new Candidate[2];
         candidates[0] = new Candidate("Bhagat", "Red Party");
         candidates[1] = new Candidate("Azad", "Green Party");
+        candidates[1] = new Candidate();
 
         while (true) {
             boolean voterFound = false;
