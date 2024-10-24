@@ -1,39 +1,48 @@
 import java.util.*;
 
-// Voter class
-class Voter {
+// Base class
+class Person {
+    protected String name;
 
-    // Private fields
-    private String name;
+    public Person() {
+        this.name = "Unknown";
+    }
+
+    public Person(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+}
+
+// Single Inheritance
+class Voter extends Person {
+
     private String voterId;
     private static int totalVoters = 0;
 
-    // Default constructor
     public Voter() {
-        this.name = "Bob";
+        super("Bob");
         this.voterId = "V002";
     }
 
-    // Parameterized constructor
     Voter(String name, String voterId) {
-        this.name = name;
+        super(name);
         this.voterId = voterId;
         totalVoters++;
     }
 
-    public String getName() { // Public accessor
-        return name;
-    }
-
-    public void setName(String name) { // Public mutator
-        this.name = name;
-    }
-
-    public String getVoterId() { // Public accessor
+    public String getVoterId() { 
         return voterId;
     }
 
-    public void setVoterId(String voterId) {  // Public mutator
+    public void setVoterId(String voterId) {  
         this.voterId = voterId;
     }
 
@@ -46,41 +55,29 @@ class Voter {
     }
 }
 
-// Candidate class
-class Candidate {
+// Hierarchical Inheritance
+class Candidate extends Person {
 
-    // Private fields
-    private String name;
     private String party;
     private int voteCount;
     private static int totalVotesCast = 0;
 
-    // Default constructor
     public Candidate() {
-        this.name = "Azad";
+        super("Azad");
         this.party = "Green Party";
     }
 
-    // Parameterized constructor
     Candidate(String name, String party) {
-        this.name = name;
+        super(name);
         this.party = party;
         this.voteCount = 0;
     }
 
-    public String getName() { // Public accessor
-        return name;
-    }
-
-    public void setName(String name) { // Public mutator
-        this.name = name;
-    }
-
-    public String getParty() { // Public accessor
+    public String getParty() {
         return party;
     }
 
-    public void setParty(String party) { // Public mutator
+    public void setParty(String party) {
         this.party = party;
     }
 
