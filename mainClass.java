@@ -1,6 +1,5 @@
 import java.util.*;
 
-// Base class
 class Person {
     protected String name;
 
@@ -21,28 +20,35 @@ class Person {
     }
 }
 
-// Single Inheritance
 class Voter extends Person {
 
     private String voterId;
     private static int totalVoters = 0;
 
+    // Constructor Overloading
     public Voter() {
         super("Bob");
         this.voterId = "V002";
+        totalVoters++;
     }
 
-    Voter(String name, String voterId) {
+    public Voter(String name) {
+        super(name);
+        this.voterId = "V000";
+        totalVoters++;
+    }
+
+    public Voter(String name, String voterId) {
         super(name);
         this.voterId = voterId;
         totalVoters++;
     }
 
-    public String getVoterId() { 
+    public String getVoterId() {
         return voterId;
     }
 
-    public void setVoterId(String voterId) {  
+    public void setVoterId(String voterId) {
         this.voterId = voterId;
     }
 
@@ -55,19 +61,24 @@ class Voter extends Person {
     }
 }
 
-// Hierarchical Inheritance
 class Candidate extends Person {
 
     private String party;
     private int voteCount;
     private static int totalVotesCast = 0;
 
+    // Constructor Overloading
     public Candidate() {
         super("Azad");
         this.party = "Green Party";
     }
 
-    Candidate(String name, String party) {
+    public Candidate(String name) {
+        super(name);
+        this.party = "Independent";
+    }
+
+    public Candidate(String name, String party) {
         super(name);
         this.party = party;
         this.voteCount = 0;
@@ -110,7 +121,7 @@ public class mainClass {
 
         Voter[] voters = new Voter[15];
         voters[0] = new Voter("John", "V001");
-        voters[1] = new Voter(); 
+        voters[1] = new Voter();
         voters[2] = new Voter("Alice", "V003");
         voters[3] = new Voter("Ravi", "V004");
         voters[4] = new Voter("Sita", "V005");
