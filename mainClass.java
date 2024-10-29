@@ -1,6 +1,7 @@
 import java.util.*;
 
-class Person {
+// Abstract class Person
+abstract class Person {
     protected String name;
 
     public Person() {
@@ -18,29 +19,35 @@ class Person {
     public void setName(String name) {
         this.name = name;
     }
+
+    // Abstract method (virtual function)
+    public abstract void castVote(String candidate, String party);
 }
 
 class Voter extends Person {
 
     private String voterId;
     private static int totalVoters = 0;
+    private boolean hasVoted;
 
-    // Constructor Overloading
     public Voter() {
         super("Bob");
         this.voterId = "V002";
+        this.hasVoted = false;
         totalVoters++;
     }
 
     public Voter(String name) {
         super(name);
         this.voterId = "V000";
+        this.hasVoted = false;
         totalVoters++;
     }
 
     public Voter(String name, String voterId) {
         super(name);
         this.voterId = voterId;
+        this.hasVoted = false;
         totalVoters++;
     }
 
@@ -52,11 +59,21 @@ class Voter extends Person {
         this.voterId = voterId;
     }
 
+    public boolean hasVoted() {
+        return hasVoted;
+    }
+
+    public void setHasVoted(boolean hasVoted) {
+        this.hasVoted = hasVoted;
+    }
+
     public static int getTotalVoters() {
         return totalVoters;
     }
 
-    void castVote(String candidate, String party) {
+    // Overriding the abstract method in Person (Virtual Function)
+    @Override
+    public void castVote(String candidate, String party) {
         System.out.println("Voter ID: " + voterId + ", " + name + " voted for " + candidate + " of " + party);
     }
 }
@@ -67,7 +84,6 @@ class Candidate extends Person {
     private int voteCount;
     private static int totalVotesCast = 0;
 
-    // Constructor Overloading
     public Candidate() {
         super("Azad");
         this.party = "Green Party";
@@ -100,7 +116,7 @@ class Candidate extends Person {
         return totalVotesCast;
     }
 
-    void receiveVote() {
+    public void receiveVote() {
         voteCount++;
         totalVotesCast++;
     }
@@ -109,8 +125,14 @@ class Candidate extends Person {
         System.out.println("Total Votes Cast in Election: " + totalVotesCast);
     }
 
-    void displayPartyVotes() {
+    public void displayPartyVotes() {
         System.out.println(party + " Party Votes: " + voteCount);
+    }
+
+    // Implementation of castVote method (even though Candidate won't cast a vote, it's here to fulfill the abstract requirement)
+    @Override
+    public void castVote(String candidate, String party) {
+        System.out.println("Candidates cannot vote in the election.");
     }
 }
 
@@ -152,25 +174,32 @@ public class mainClass {
                 for (Voter voter : voters) {
                     if (voter.getName().equals(inputName) && voter.getVoterId().equals(inputVoterId)) {
                         voterFound = true;
-                        System.out.println("Voter verified.");
 
-                        boolean validVote = false;
-                        while (!validVote) {
-                            System.out.println("Enter candidate's unique number to vote:");
-                            for (int i = 0; i < candidates.length; i++) {
-                                System.out.println((i + 1) + ": " + candidates[i].getName() + " (" + candidates[i].getParty() + ")");
-                            }
+                        if (voter.hasVoted()) {
+                            System.out.println("You have already voted. You cannot vote again.");
+                            break;
+                        } else {
+                            System.out.println("Voter verified.");
 
-                            int candidateChoice = scanner.nextInt();
-                            scanner.nextLine();
+                            boolean validVote = false;
+                            while (!validVote) {
+                                System.out.println("Enter candidate's unique number to vote:");
+                                for (int i = 0; i < candidates.length; i++) {
+                                    System.out.println((i + 1) + ": " + candidates[i].getName() + " (" + candidates[i].getParty() + ")");
+                                }
 
-                            if (candidateChoice >= 1 && candidateChoice <= candidates.length) {
-                                voter.castVote(candidates[candidateChoice - 1].getName(), candidates[candidateChoice - 1].getParty());
-                                candidates[candidateChoice - 1].receiveVote();
-                                votersVoted++;
-                                validVote = true;
-                            } else {
-                                System.out.println("Invalid candidate choice. Please try again.");
+                                int candidateChoice = scanner.nextInt();
+                                scanner.nextLine();
+
+                                if (candidateChoice >= 1 && candidateChoice <= candidates.length) {
+                                    voter.castVote(candidates[candidateChoice - 1].getName(), candidates[candidateChoice - 1].getParty());
+                                    candidates[candidateChoice - 1].receiveVote();
+                                    voter.setHasVoted(true);
+                                    votersVoted++;
+                                    validVote = true;
+                                } else {
+                                    System.out.println("Invalid candidate choice. Please try again.");
+                                }
                             }
                         }
 
