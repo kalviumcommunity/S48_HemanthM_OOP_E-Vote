@@ -1,5 +1,6 @@
 import java.util.*;
 
+// Abstract class Person
 abstract class Person {
     protected String name;
 
@@ -19,73 +20,8 @@ abstract class Person {
         this.name = name;
     }
 
+    // Abstract method (virtual function)
     public abstract void castVote(String candidate, String party);
-}
-
-// Class for Voter Management <- Added a new class to follow SRP
-class VoterManager {
-    private Voter[] voters;
-    private int votersVoted;
-
-    public VoterManager(Voter[] voters) {
-        this.voters = voters;
-        this.votersVoted = 0;
-    }
-
-    public Voter[] getVoters() {
-        return voters;
-    }
-
-    public void incrementVotersVoted() {
-        votersVoted++;
-    }
-
-    public int getVotersVoted() {
-        return votersVoted;
-    }
-
-    public boolean validateVoter(String name, String voterId) {
-        for (Voter voter : voters) {
-            if (voter.getName().equals(name) && voter.getVoterId().equals(voterId)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public Voter getVoter(String name, String voterId) {
-        for (Voter voter : voters) {
-            if (voter.getName().equals(name) && voter.getVoterId().equals(voterId)) {
-                return voter;
-            }
-        }
-        return null;
-    }
-}
-
-// Class for Candidate Management <- Added a new class to follow SRP
-class CandidateManager {
-    private Candidate[] candidates;
-
-    public CandidateManager(Candidate[] candidates) {
-        this.candidates = candidates;
-    }
-
-    public Candidate[] getCandidates() {
-        return candidates;
-    }
-
-    public void displayCandidates() {
-        for (int i = 0; i < candidates.length; i++) {
-            System.out.println((i + 1) + ": " + candidates[i].getName() + " (" + candidates[i].getParty() + ")");
-        }
-    }
-
-    public void displayTotalVotes() {
-        for (Candidate candidate : candidates) {
-            candidate.displayPartyVotes();
-        }
-    }
 }
 
 class Voter extends Person {
@@ -135,6 +71,7 @@ class Voter extends Person {
         return totalVoters;
     }
 
+    // Overriding the abstract method in Person (Virtual Function)
     @Override
     public void castVote(String candidate, String party) {
         System.out.println("Voter ID: " + voterId + ", " + name + " voted for " + candidate + " of " + party);
@@ -192,6 +129,7 @@ class Candidate extends Person {
         System.out.println(party + " Party Votes: " + voteCount);
     }
 
+    // Implementation of castVote method (even though Candidate won't cast a vote, it's here to fulfill the abstract requirement)
     @Override
     public void castVote(String candidate, String party) {
         System.out.println("Candidates cannot vote in the election.");
@@ -201,6 +139,7 @@ class Candidate extends Person {
 public class mainClass {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
+        int votersVoted = 0;
 
         Voter[] voters = new Voter[15];
         voters[0] = new Voter("John", "V001");
@@ -223,50 +162,90 @@ public class mainClass {
         candidates[0] = new Candidate("Bhagat", "Red Party");
         candidates[1] = new Candidate();
 
-        VoterManager voterManager = new VoterManager(voters); // <- SRP applied
-        CandidateManager candidateManager = new CandidateManager(candidates); // <- SRP applied
-
         while (true) {
-            System.out.println("Enter your name:");
-            String name = scanner.nextLine();
-            System.out.println("Enter your Voter ID:");
-            String voterId = scanner.nextLine();
+            boolean voterFound = false;
 
-            if (!voterManager.validateVoter(name, voterId)) {
-                System.out.println("Invalid voter details. Try again.");
-                continue;
-            }
+            while (!voterFound) {
+                System.out.println("Enter your name:");
+                String inputName = scanner.nextLine();
+                System.out.println("Enter your Voter ID:");
+                String inputVoterId = scanner.nextLine();
 
-            Voter voter = voterManager.getVoter(name, voterId);
-            if (voter.hasVoted()) {
-                System.out.println("You have already voted.");
-                continue;
-            }
+                for (Voter voter : voters) {
+                    if (voter.getName().equals(inputName) && voter.getVoterId().equals(inputVoterId)) {
+                        voterFound = true;
 
-            System.out.println("Enter candidate's unique number:");
-            candidateManager.displayCandidates();
-            int choice = scanner.nextInt();
-            scanner.nextLine();
+                        if (voter.hasVoted()) {
+                            System.out.println("You have already voted. You cannot vote again.");
+                            break;
+                        } else {
+                            System.out.println("Voter verified.");
 
-            if (choice < 1 || choice > candidates.length) {
-                System.out.println("Invalid choice. Try again.");
-                continue;
-            }
+                            boolean validVote = false;
+                            while (!validVote) {
+                                System.out.println("Enter candidate's unique number to vote:");
+                                for (int i = 0; i < candidates.length; i++) {
+                                    System.out.println((i + 1) + ": " + candidates[i].getName() + " (" + candidates[i].getParty() + ")");
+                                }
 
-            Candidate candidate = candidates[choice - 1];
-            voter.castVote(candidate.getName(), candidate.getParty());
-            candidate.receiveVote();
-            voter.setHasVoted(true);
-            voterManager.incrementVotersVoted();
+                                int candidateChoice = scanner.nextInt();
+                                scanner.nextLine();
 
-            System.out.println("\n1. Exit\n2. Show Total Votes");
-            int option = scanner.nextInt();
-            if (option == 1) {
-                System.out.println("Exiting...");
-                scanner.close();
-                break;
-            } else if (option == 2) {
-                candidateManager.displayTotalVotes();
+                                if (candidateChoice >= 1 && candidateChoice <= candidates.length) {
+                                    voter.castVote(candidates[candidateChoice - 1].getName(), candidates[candidateChoice - 1].getParty());
+                                    candidates[candidateChoice - 1].receiveVote();
+                                    voter.setHasVoted(true);
+                                    votersVoted++;
+                                    validVote = true;
+                                } else {
+                                    System.out.println("Invalid candidate choice. Please try again.");
+                                }
+                            }
+                        }
+
+                        boolean continueOptions = true;
+                        while (continueOptions) {
+                            System.out.println("\nWhat would you like to do next?");
+                            System.out.println("1. Exit");
+                            System.out.println("2. Next Vote");
+                            System.out.println("3. Show Total Voters in Array");
+                            System.out.println("4. Show Total Voters Who Voted");
+                            System.out.println("5. Show Total Votes Received by Each Party");
+
+                            int choice = scanner.nextInt();
+                            scanner.nextLine();
+
+                            switch (choice) {
+                                case 1:
+                                    System.out.println("Exiting program...");
+                                    scanner.close();
+                                    return;
+                                case 2:
+                                    continueOptions = false;
+                                    break;
+                                case 3:
+                                    System.out.println("Total Voters in Array: " + Voter.getTotalVoters());
+                                    break;
+                                case 4:
+                                    System.out.println("Total Voters Who Voted: " + votersVoted);
+                                    break;
+                                case 5:
+                                    for (Candidate candidate : candidates) {
+                                        candidate.displayPartyVotes();
+                                    }
+                                    break;
+                                default:
+                                    System.out.println("Invalid choice. Please try again.");
+                            }
+                        }
+
+                        break;
+                    }
+                }
+
+                if (!voterFound) {
+                    System.out.println("Voter not found or incorrect details provided. Please try again.");
+                }
             }
         }
     }
