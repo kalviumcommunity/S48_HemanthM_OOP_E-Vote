@@ -22,43 +22,17 @@ abstract class Person {
     public abstract void castVote(String candidate, String party);
 }
 
-// <- Added Admin class to demonstrate Open/Closed Principle
-class Admin extends Person {
-    private String adminId;
-
-    public Admin(String name, String adminId) {
-        super(name);
-        this.adminId = adminId;
-    }
-
-    public String getAdminId() {
-        return adminId;
-    }
-
-    public void validateResults(Candidate[] candidates) {
-        System.out.println("Validating election results...");
-        Candidate winner = null;
-        int maxVotes = -1;
-        for (Candidate candidate : candidates) {
-            if (candidate.getVoteCount() > maxVotes) {
-                maxVotes = candidate.getVoteCount();
-                winner = candidate;
-            }
-        }
-        if (winner != null) {
-            System.out.println("Winner is " + winner.getName() + " (" + winner.getParty() + ") with " + winner.getVoteCount() + " votes.");
-        } else {
-            System.out.println("No votes cast.");
-        }
-    }
-
-    @Override
-    public void castVote(String candidate, String party) {
-        System.out.println("Admins cannot vote.");
-    }
+interface VoterActions { // <- Added interface for Voter actions
+    void castVote(String candidate, String party); // <- Method for casting a vote
+    boolean hasVoted(); // <- Method to check if voter has voted
 }
 
-class Voter extends Person {
+interface CandidateActions { // <- Added interface for Candidate actions
+    void receiveVote(); // <- Method to receive a vote
+    void displayPartyVotes(); // <- Method to display party votes
+}
+
+class Voter extends Person implements VoterActions { // <- Implementing VoterActions interface
     private String voterId;
     private static int totalVoters = 0;
     private boolean hasVoted;
@@ -74,7 +48,7 @@ class Voter extends Person {
         return voterId;
     }
 
-    public boolean hasVoted() {
+    public boolean hasVoted() { // <- Implemented hasVoted method from VoterActions
         return hasVoted;
     }
 
@@ -87,12 +61,12 @@ class Voter extends Person {
     }
 
     @Override
-    public void castVote(String candidate, String party) {
+    public void castVote(String candidate, String party) { // <- Implemented castVote method from VoterActions
         System.out.println("Voter " + voterId + " (" + name + ") voted for " + candidate + " (" + party + ")");
     }
 }
 
-class Candidate extends Person {
+class Candidate extends Person implements CandidateActions { // <- Implementing CandidateActions interface
     private String party;
     private int voteCount;
 
@@ -110,11 +84,11 @@ class Candidate extends Person {
         return voteCount;
     }
 
-    public void receiveVote() {
+    public void receiveVote() { // <- Implemented receiveVote method from CandidateActions
         voteCount++;
     }
 
-    public void displayPartyVotes() {
+    public void displayPartyVotes() { // <- Implemented displayPartyVotes method from CandidateActions
         System.out.println(party + " Party Votes: " + voteCount);
     }
 
@@ -141,9 +115,6 @@ public class mainClass {
                 new Candidate("Azad", "Green Party")
         };
 
-        // <- Added Admin instance to demonstrate OCP
-        Admin admin = new Admin("ElectionAdmin", "A001");
-
         String password = "12345678";
         int votersVoted = 0;
 
@@ -152,7 +123,6 @@ public class mainClass {
             System.out.println("1. Cast Vote");
             System.out.println("2. Show Details");
             System.out.println("3. Exit");
-            System.out.println("4. Admin Validate Results"); // <- New option for admin validation
 
             int choice = scanner.nextInt();
             scanner.nextLine();
@@ -241,10 +211,6 @@ public class mainClass {
                     } else {
                         System.out.println("Passwords do not match. Returning to menu.");
                     }
-                    break;
-
-                case 4: // <- New case for admin to validate results
-                    admin.validateResults(candidates);
                     break;
 
                 default:
