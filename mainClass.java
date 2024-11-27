@@ -1,6 +1,5 @@
 import java.util.*;
 
-// Abstract class Person
 abstract class Person {
     protected String name;
 
@@ -20,73 +19,42 @@ abstract class Person {
         this.name = name;
     }
 
-    // Abstract method (virtual function)
     public abstract void castVote(String candidate, String party);
 }
 
-// Class for Voter Management
-class VoterManager {
-    private Voter[] voters;
-    private int votersVoted;
+// <- Added Admin class to demonstrate Open/Closed Principle
+class Admin extends Person {
+    private String adminId;
 
-    public VoterManager(Voter[] voters) {
-        this.voters = voters;
-        this.votersVoted = 0;
+    public Admin(String name, String adminId) {
+        super(name);
+        this.adminId = adminId;
     }
 
-    public Voter[] getVoters() {
-        return voters;
+    public String getAdminId() {
+        return adminId;
     }
 
-    public void incrementVotersVoted() {
-        votersVoted++;
-    }
-
-    public int getVotersVoted() {
-        return votersVoted;
-    }
-
-    public boolean validateVoter(String name, String voterId) {
-        for (Voter voter : voters) {
-            if (voter.getName().equals(name) && voter.getVoterId().equals(voterId)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public Voter getVoter(String name, String voterId) {
-        for (Voter voter : voters) {
-            if (voter.getName().equals(name) && voter.getVoterId().equals(voterId)) {
-                return voter;
-            }
-        }
-        return null;
-    }
-}
-
-// Class for Candidate Management
-class CandidateManager {
-    private Candidate[] candidates;
-
-    public CandidateManager(Candidate[] candidates) {
-        this.candidates = candidates;
-    }
-
-    public Candidate[] getCandidates() {
-        return candidates;
-    }
-
-    public void displayCandidates() {
-        for (int i = 0; i < candidates.length; i++) {
-            System.out.println((i + 1) + ": " + candidates[i].getName() + " (" + candidates[i].getParty() + ")");
-        }
-    }
-
-    public void displayTotalVotes() {
+    public void validateResults(Candidate[] candidates) {
+        System.out.println("Validating election results...");
+        Candidate winner = null;
+        int maxVotes = -1;
         for (Candidate candidate : candidates) {
-            candidate.displayPartyVotes();
+            if (candidate.getVoteCount() > maxVotes) {
+                maxVotes = candidate.getVoteCount();
+                winner = candidate;
+            }
         }
+        if (winner != null) {
+            System.out.println("Winner is " + winner.getName() + " (" + winner.getParty() + ") with " + winner.getVoteCount() + " votes.");
+        } else {
+            System.out.println("No votes cast.");
+        }
+    }
+
+    @Override
+    public void castVote(String candidate, String party) {
+        System.out.println("Admins cannot vote.");
     }
 }
 
@@ -94,20 +62,6 @@ class Voter extends Person {
     private String voterId;
     private static int totalVoters = 0;
     private boolean hasVoted;
-
-    public Voter() {
-        super("Bob");
-        this.voterId = "V002";
-        this.hasVoted = false;
-        totalVoters++;
-    }
-
-    public Voter(String name) {
-        super(name);
-        this.voterId = "V000";
-        this.hasVoted = false;
-        totalVoters++;
-    }
 
     public Voter(String name, String voterId) {
         super(name);
@@ -118,10 +72,6 @@ class Voter extends Person {
 
     public String getVoterId() {
         return voterId;
-    }
-
-    public void setVoterId(String voterId) {
-        this.voterId = voterId;
     }
 
     public boolean hasVoted() {
@@ -138,24 +88,13 @@ class Voter extends Person {
 
     @Override
     public void castVote(String candidate, String party) {
-        System.out.println("Voter ID: " + voterId + ", " + name + " voted for " + candidate + " of " + party);
+        System.out.println("Voter " + voterId + " (" + name + ") voted for " + candidate + " (" + party + ")");
     }
 }
 
 class Candidate extends Person {
     private String party;
     private int voteCount;
-    private static int totalVotesCast = 0;
-
-    public Candidate() {
-        super("Azad");
-        this.party = "Green Party";
-    }
-
-    public Candidate(String name) {
-        super(name);
-        this.party = "Independent";
-    }
 
     public Candidate(String name, String party) {
         super(name);
@@ -167,25 +106,12 @@ class Candidate extends Person {
         return party;
     }
 
-    public void setParty(String party) {
-        this.party = party;
-    }
-
     public int getVoteCount() {
         return voteCount;
     }
 
-    public static int getTotalVotesCast() {
-        return totalVotesCast;
-    }
-
     public void receiveVote() {
         voteCount++;
-        totalVotesCast++;
-    }
-
-    public static void displayTotalVotesCast() {
-        System.out.println("Total Votes Cast in Election: " + totalVotesCast);
     }
 
     public void displayPartyVotes() {
@@ -194,7 +120,7 @@ class Candidate extends Person {
 
     @Override
     public void castVote(String candidate, String party) {
-        System.out.println("Candidates cannot vote in the election.");
+        System.out.println("Candidates cannot vote.");
     }
 }
 
@@ -202,95 +128,127 @@ public class mainClass {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        Voter[] voters = new Voter[15];
-        voters[0] = new Voter("John", "V001");
-        voters[1] = new Voter();
-        voters[2] = new Voter("Alice", "V003");
-        voters[3] = new Voter("Ravi", "V004");
-        voters[4] = new Voter("Sita", "V005");
-        voters[5] = new Voter("Mohan", "V006");
-        voters[6] = new Voter("Radha", "V007");
-        voters[7] = new Voter("Suresh", "V008");
-        voters[8] = new Voter("Geeta", "V009");
-        voters[9] = new Voter("Vikram", "V010");
-        voters[10] = new Voter("Anjali", "V011");
-        voters[11] = new Voter("Karan", "V012");
-        voters[12] = new Voter("Deepa", "V013");
-        voters[13] = new Voter("Ramesh", "V014");
-        voters[14] = new Voter("Sunita", "V015");
+        Voter[] voters = {
+                new Voter("John", "V001"),
+                new Voter("Alice", "V002"),
+                new Voter("Ravi", "V003"),
+                new Voter("Sita", "V004"),
+                new Voter("Mohan", "V005")
+        };
 
-        Candidate[] candidates = new Candidate[2];
-        candidates[0] = new Candidate("Bhagat", "Red Party");
-        candidates[1] = new Candidate();
+        Candidate[] candidates = {
+                new Candidate("Bhagat", "Red Party"),
+                new Candidate("Azad", "Green Party")
+        };
 
-        VoterManager voterManager = new VoterManager(voters);
-        CandidateManager candidateManager = new CandidateManager(candidates);
+        // <- Added Admin instance to demonstrate OCP
+        Admin admin = new Admin("ElectionAdmin", "A001");
+
+        String password = "12345678";
+        int votersVoted = 0;
 
         while (true) {
-            System.out.println("Enter your name:");
-            String name = scanner.nextLine();
-            System.out.println("Enter your Voter ID:");
-            String voterId = scanner.nextLine();
+            System.out.println("\nMenu:");
+            System.out.println("1. Cast Vote");
+            System.out.println("2. Show Details");
+            System.out.println("3. Exit");
+            System.out.println("4. Admin Validate Results"); // <- New option for admin validation
 
-            if (!voterManager.validateVoter(name, voterId)) {
-                System.out.println("Invalid voter details. Try again.");
-                continue;
-            }
-
-            Voter voter = voterManager.getVoter(name, voterId);
-            if (voter.hasVoted()) {
-                System.out.println("You have already voted. You cannot vote again.");
-                continue;
-            }
-
-            System.out.println("Enter candidate's unique number:");
-            candidateManager.displayCandidates();
             int choice = scanner.nextInt();
             scanner.nextLine();
 
-            if (choice < 1 || choice > candidates.length) {
-                System.out.println("Invalid candidate choice. Please try again.");
-                continue;
-            }
+            switch (choice) {
+                case 1: // Cast Vote
+                    System.out.println("Enter your name:");
+                    String inputName = scanner.nextLine();
+                    System.out.println("Enter your Voter ID:");
+                    String inputVoterId = scanner.nextLine();
 
-            Candidate candidate = candidates[choice - 1];
-            voter.castVote(candidate.getName(), candidate.getParty());
-            candidate.receiveVote();
-            voter.setHasVoted(true);
-            voterManager.incrementVotersVoted();
+                    boolean voterFound = false;
+                    for (Voter voter : voters) {
+                        if (voter.getName().equals(inputName) && voter.getVoterId().equals(inputVoterId)) {
+                            voterFound = true;
+                            if (voter.hasVoted()) {
+                                System.out.println("You have already voted.");
+                            } else {
+                                System.out.println("Choose a candidate to vote:");
+                                for (int i = 0; i < candidates.length; i++) {
+                                    System.out.println((i + 1) + ": " + candidates[i].getName() + " (" + candidates[i].getParty() + ")");
+                                }
 
-            boolean continueOptions = true;
-            while (continueOptions) {
-                System.out.println("\nWhat would you like to do next?");
-                System.out.println("1. Exit");
-                System.out.println("2. Next Vote");
-                System.out.println("3. Show Total Voters in Array");
-                System.out.println("4. Show Total Voters Who Voted");
-                System.out.println("5. Show Total Votes Received by Each Party");
+                                int candidateChoice = scanner.nextInt();
+                                scanner.nextLine();
 
-                int option = scanner.nextInt();
-                scanner.nextLine();
+                                if (candidateChoice >= 1 && candidateChoice <= candidates.length) {
+                                    voter.castVote(candidates[candidateChoice - 1].getName(), candidates[candidateChoice - 1].getParty());
+                                    candidates[candidateChoice - 1].receiveVote();
+                                    voter.setHasVoted(true);
+                                    votersVoted++;
+                                } else {
+                                    System.out.println("Invalid candidate choice.");
+                                }
+                            }
+                            break;
+                        }
+                    }
 
-                switch (option) {
-                    case 1:
-                        System.out.println("Exiting program...");
-                        scanner.close();
+                    if (!voterFound) {
+                        System.out.println("Voter not found.");
+                    }
+                    break;
+
+                case 2: // Show Details
+                    System.out.println("Enter password:");
+                    String enteredPassword = scanner.nextLine();
+                    if (enteredPassword.equals(password)) {
+                        System.out.println("Total Voters: " + Voter.getTotalVoters());
+                        System.out.println("Total Voters Who Voted: " + votersVoted);
+                        for (Candidate candidate : candidates) {
+                            candidate.displayPartyVotes();
+                        }
+                    } else {
+                        System.out.println("Incorrect password.");
+                    }
+                    break;
+
+                case 3: // Exit
+                    System.out.println("Enter password:");
+                    String firstPassword = scanner.nextLine();
+                    System.out.println("Confirm password:");
+                    String confirmPassword = scanner.nextLine();
+
+                    if (firstPassword.equals(password) && confirmPassword.equals(password)) {
+                        Candidate winner = null;
+                        int maxVotes = -1;
+                        int secondMaxVotes = -1;
+
+                        for (Candidate candidate : candidates) {
+                            if (candidate.getVoteCount() > maxVotes) {
+                                secondMaxVotes = maxVotes;
+                                maxVotes = candidate.getVoteCount();
+                                winner = candidate;
+                            } else if (candidate.getVoteCount() > secondMaxVotes) {
+                                secondMaxVotes = candidate.getVoteCount();
+                            }
+                        }
+
+                        int lead = maxVotes - secondMaxVotes;
+                        if (winner != null) {
+                            System.out.println("Winner: " + winner.getName() + " (" + winner.getParty() + ")");
+                            System.out.println("Vote Lead: " + lead);
+                        }
                         return;
-                    case 2:
-                        continueOptions = false;
-                        break;
-                    case 3:
-                        System.out.println("Total Voters in Array: " + Voter.getTotalVoters());
-                        break;
-                    case 4:
-                        System.out.println("Total Voters Who Voted: " + voterManager.getVotersVoted());
-                        break;
-                    case 5:
-                        candidateManager.displayTotalVotes();
-                        break;
-                    default:
-                        System.out.println("Invalid choice. Please try again.");
-                }
+                    } else {
+                        System.out.println("Passwords do not match. Returning to menu.");
+                    }
+                    break;
+
+                case 4: // <- New case for admin to validate results
+                    admin.validateResults(candidates);
+                    break;
+
+                default:
+                    System.out.println("Invalid choice.");
             }
         }
     }
